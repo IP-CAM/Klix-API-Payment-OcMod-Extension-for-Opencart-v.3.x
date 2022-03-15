@@ -1,0 +1,156 @@
+
+{# data-source = \ControllerExtensionPaymentSpellPayment::collectTplData() #}
+
+{% if error %}
+  <h3>{{ error }}</h3>
+{% else %}
+<form action="{{ action }}" method="post" id="payment" class="form-horizontal spell-payment">
+    <div id="payment">
+        {% if config.payment_spell_payment_enabled %}
+            <h3>{{ title }}</h3>
+            <div class="payment-method-select">
+
+                {% if country_options|length > 1 %}
+                    <div><label>
+                        <select name="country" class="form-control" id="spell-country" title="Country">
+                            {% for country in country_options %}
+                                <option
+                                    value="{{ country }}"
+                                    {% if country == selected_country %}selected="selected"{% endif %}
+                                >
+                                    {{ payment_methods_api_data.country_names[country] }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </label></div>
+                {% else %}
+                    <input type="hidden" id="spell-country" name="country" value="{{ selected_country }}">
+                {% endif %}
+
+                <span class="payment-method-list">
+                    {% for key, data in by_method %}
+                        <label style="padding: 1em; width: 250px;">
+                            <input type="radio"
+                                   required="required"
+                                   name="payment_method"
+                                   class="spell-payment-method"
+                                   value="{{ data.payment_method }}"
+                                   data-countries="{{ data.countries|json_encode|escape }}"
+                            />
+                            <div style="font-size: 14px;">{{ payment_methods_api_data.names[data.payment_method] }}</div>
+                            {% set logo = payment_methods_api_data.logos[data.payment_method] %}
+                            {% if logo is not iterable %}
+                                <div><img src="https://portal.klix.app{{ logo }}"
+                                          height='30' style='max-width: 160px; max-height: 30px;'
+                                /></div>
+                            {% else %}
+                                <span style="display: block;
+                                      padding-bottom: 3px;
+                                      min-width: {{ data.max_multiple_logos_width }}px;
+                                      max-width: {{ data.max_multiple_logos_width }}px;"
+                                >
+                                    {% for i in logo %}
+                                        <img src="https://portal.klix.app{{ i }}"
+                                             width="40" height="35"
+                                             style="margin: 0 10px 10px 0; float: left;"
+                                        />
+                                    {% endfor %}
+                                    <div class="clear-div"></div>
+                                </span>
+                            {% endif %}
+                        </label>
+                    {% endfor %}
+                </span>
+            </div>
+        {% endif %}
+        <div>
+            <button class="btn btn-primary submit-payment-method-button"
+                    onclick="$('#payment').submit();"
+            ><span>{{place_order}}</span></button>
+            <button class="btn btn-primary submit-payment-method-button"
+                    disabled="disabled"
+            ><span>{{place_order}}</span></button>
+            <br clear="all"/>
+        </div>
+    </div>
+</form>
+{% endif %}
+
+<script>
+    function spellFilterPMs() {
+        var countrySelect = document.getElementById("spell-country");
+        if (countrySelect == null) {
+            return;
+        };
+
+        var selected = countrySelect.value;
+        var els = document
+            .getElementsByClassName("spell-payment-method");
+        var first = true;
+        for (var i = 0; i < els.length; i++) {
+            var el = els[i];
+            var countries = JSON
+                .parse(el.getAttribute("data-countries"));
+
+            var includes = false;
+        check_includes:
+            for (var j = 0; j < countries.length; j++) {
+                switch (countries[j]) {
+                case selected:
+                case "any":
+                    includes = true;
+                    break check_includes;
+                }
+            }
+
+            el.parentElement.hidden = !includes;
+            el.checked = false;
+            if (includes && first) {
+                first = false;
+                el.checked = true;
+            }
+        }
+    }
+
+    var countrySelect = document.getElementById("spell-country");
+    if (countrySelect != null) {
+        countrySelect.addEventListener("change", spellFilterPMs);
+    }
+    spellFilterPMs();
+</script>
+
+<style>
+    form.spell-payment > div {
+        background-color: #efefef;
+        padding: 8px;
+        margin: 4px;
+    }
+    form.spell-payment .payment-method-select {
+        background-color: #e6e6e6;
+        padding: 8px;
+    }
+    form.spell-payment .payment-method-list {
+        display: flex;
+        flex-flow: row wrap;
+        margin: 4px;
+    }
+    form.spell-payment .payment-method-list > label {
+        background-color: #dedede;
+        margin-right: 8px;
+        border-radius: 15px;
+    }
+    form.spell-payment .payment-method-list .clear-div {
+        clear: both;
+        background-color: transparent;
+    }
+    form.spell-payment .submit-payment-method-button {
+        float: right;
+        margin: 4px;
+    }
+    form.spell-payment:invalid .submit-payment-method-button:not(:disabled) {
+        display: none;
+    }
+    form.spell-payment:valid .submit-payment-method-button:disabled {
+        display: none;
+    }
+</style>

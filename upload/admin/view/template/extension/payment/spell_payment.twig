@@ -1,0 +1,220 @@
+
+{# data-source = \ControllerExtensionPaymentSpellPayment::collectTplData() #}
+
+{{ header }}{{ column_left }}
+
+<div id="content">
+    <div class="page-header">
+        <div class="container-fluid">
+            <div class="pull-right">
+                <button type="submit" form="form" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+                <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a>
+            </div>
+
+            <h2>{{languages.module_config_title}}</h2>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        {% if error_warning %}
+        <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+        </div>
+        {% endif %}
+
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form" class="form-horizontal">
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="tab-general">
+                            <div class="form-group row">
+                                <label class="col-sm-2 control-label" for="input-status">{{languages.enable_api}}</label>
+                                <div class="col-sm-10">
+                                    <label>
+                                        <input name="payment_spell_payment_status"
+                                               id="input-status"
+                                               type="checkbox"
+                                               {% if payment_spell_payment_status %}checked="checked"{% endif %}
+                                        />
+                                        <span>{{languages.enable_api}}</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-sm-2 control-label" for="input-status">{{languages.enable_payment_method_selection}}</label>
+                                <div class="col-sm-10">
+                                    <div>
+                                        <label>
+                                            <input name="payment_spell_payment_enabled"
+                                                   id="input-status"
+                                                   type="checkbox"
+                                                   {% if payment_spell_payment_enabled or payment_spell_payment_enabled is null %}checked="checked"{% endif %}
+                                            />
+                                            <span>{{languages.enable_payment_method_selection}}</span>
+                                        </label>
+                                    </div>
+                                    <div>
+                                        <i>{{languages.pm_info}}</i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-2 control-label" for="input-status">{{languages.enable_pdp}}</label>
+                                <div class="col-sm-10">
+                                    <div>
+                                        <label>
+                                            <input name="payment_spell_payment_pdp"
+                                                   id="input-status"
+                                                   type="checkbox"
+                                                   {% if payment_spell_payment_pdp or payment_spell_payment_pdp is null %}checked="checked"{% endif %}
+                                            />
+                                            <span>{{languages.enable_pdp}}</span>
+                                        </label>
+                                    </div>
+                                    <div>
+                                        <i>{{languages.enable_pdp_info}}</i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-sm-2 control-label" for="method_desc">{{languages.pm_description}}</label>
+
+                                <div class="col-sm-10">
+                                    <div>
+                                        <input type="text"
+                                               name="payment_spell_payment_method_desc"
+                                               value="{{ payment_spell_payment_method_desc }}"
+                                               id="method_desc" class="form-control"
+                                               placeholder="Klix E-commerce Gateway"
+                                        />
+                                    </div>
+                                    <div>
+                                        <i>{{languages.pm_description_info}}</i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-2 control-label" for="method_title">{{languages.pm_title}}</label>
+
+                                <div class="col-sm-10">
+                                    <div>
+                                        <input type="text"
+                                               name="payment_spell_payment_method_title"
+                                               value="{{ payment_spell_payment_method_title }}"
+                                               id="method_title" class="form-control"
+                                               placeholder="Select payment method"
+                                        />
+                                    </div>
+                                    <div>
+                                        <i>{{languages.pm_title_info}}</i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group required row">
+                                <label class="col-sm-2 control-label" for="input-brand-id">{{languages.brand_id}}</label>
+
+                                <div class="col-sm-10">
+                                    <div>
+                                        <input type="text" name="payment_spell_payment_brand_id" value="{{ payment_spell_payment_brand_id }}" id="input-brand-id" class="form-control"/>
+                                    </div>
+                                    <div>
+                                        <i>{{languages.brand_id_info}}</i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group required row">
+                                <label class="col-sm-2 control-label" for="input-secret-code">{{languages.secret_key}}</label>
+
+                                <div class="col-sm-10">
+                                    <div>
+                                        <input type="text" name="payment_spell_payment_secret_code" value="{{ payment_spell_payment_secret_code }}" id="input-secret-code" class="form-control"/>
+                                    </div>
+                                    <div>
+                                        <i>{{languages.secret_key_info}}</i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group required row">
+                                <label class="col-sm-2 control-label" for="input-success-status">{{languages.order_payment_success_status}}</label>
+
+                                <div class="col-sm-10">
+                                    <div>
+                                        <select type="text"
+                                               name="payment_spell_payment_success_status_id"
+                                               id="input-success-status"
+                                               class="form-control"
+                                        >
+                                            <option value=""> -- {{languages.select_option}} -- </option>
+                                            {% for order_status in order_statuses %}
+                                                {% if order_status.order_status_id == payment_spell_payment_success_status_id %}
+                                                    <option value="{{ order_status.order_status_id }}" selected="selected">{{ order_status.name }}</option>
+                                                {% else %}
+                                                    <option value="{{ order_status.order_status_id }}">{{ order_status.name }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <i>{{languages.order_payment_success_status_info}}</i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group required row">
+                                <label class="col-sm-2 control-label" for="input-error-status">{{languages.order_payment_error_status}}</label>
+
+                                <div class="col-sm-10">
+                                    <div>
+                                        <select type="text"
+                                               name="payment_spell_payment_error_status_id"
+                                               id="input-error-status"
+                                               class="form-control"
+                                        >
+                                            <option value=""> -- {{languages.select_option}} -- </option>
+                                            {% for order_status in order_statuses %}
+                                                {% if order_status.order_status_id == payment_spell_payment_error_status_id %}
+                                                    <option value="{{ order_status.order_status_id }}" selected="selected">{{ order_status.name }}</option>
+                                                {% else %}
+                                                    <option value="{{ order_status.order_status_id }}">{{ order_status.name }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <i>{{languages.order_payment_error_status_info}}</i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-sm-2 control-label" for="input-debug"
+                                       title="Enabling debug will write sensitive data to a log file. You should always disable unless instructed otherwise"
+                                >{{languages.debug_log}}</label>
+                                <div class="col-sm-10">
+                                    <div>
+                                        <label>
+                                            <input name="payment_spell_payment_debug"
+                                                   id="input-debug"
+                                                   type="checkbox"
+                                                   {% if payment_spell_payment_debug %}checked="checked"{% endif %}
+                                            />
+                                            <span>{{languages.enable_logging}}</span>
+                                        </label>
+                                    </div>
+                                    <div>
+                                        <i>{{languages.log_to}} <code>{{ logs_dir_path }}error.log</code></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{ footer }}

@@ -1,0 +1,33 @@
+a.paynow_link {
+  padding: 0;
+  background: #0094ff !important;
+}
+
+a.paynow_link > img {
+  height: 41px;
+  object-fit: contain;
+  width: calc(100% - 30px) !important;
+  max-width: 250px !important;
+  margin: auto !important;
+}
+
+div.spell_wrapper {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+a.cart_paynow {
+  display: block;
+  margin-top: 10px;
+}
+
+div.spell_cart_wrapper {
+  float: right;
+  clear: both;
+}
+
+.checkout_pay_now_spell_wrapper > a {
+    padding: 0;
+    background: #0094FF !important;
+    width: 100%;
+}

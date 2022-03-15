@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<modification>
+    <code>Klix</code>
+    <name>Klix</name>
+    <version>1.1.1e</version>
+    <author>Klix</author>
+    <link>https://portal.klix.app</link>
+     <file path="catalog/view/theme/*/template/product/product.twig">
+		<operation>
+			<search position="after"><![CDATA[ <input type="hidden" name="product_id" value="{{ product_id }}" /> ]]></search>
+			<add position="after" error="skip"><![CDATA[
+            {% if payment_spell_payment_pdp %}
+            <link rel="stylesheet" type="text/css" href="catalog/view/theme/default/stylesheet/spell.css" />
+            <br/>
+            <a class="btn btn-primary btn-lg btn-block paynow_link" href="{{one_click_checkout}}&product_id={{product_id}}">
+                <img src="{{payment_spell_payment_pdp_btn_img}}">
+            </a>
+            {% endif %}
+            ]]></add>
+		</operation>
+	</file>
+	<file path="catalog/controller/product/product.php">
+        <!-- <since i used a onepage checkout module, so the below route is set as onepage/checkout,
+        if you use default check out, you need to change it to checkout/checkout> -->
+        <operation>
+            <search position="after"><![CDATA[
+			$data['model'] = $product_info['model'];
+            ]]></search>
+            <add position="after" error="skip"><![CDATA[
+            $data['model'] = $product_info['model'];
+            $data['one_click_checkout']= $this->url->link('extension/payment/spell_payment/oneClickProcess', '', true);
+            $data['payment_spell_payment_pdp'] = $this->config->get('payment_spell_payment_pdp');
+            $this->document->addStyle('spell.css');
+            require_once  realpath('') . '/catalog/controller/extension/payment/spell/helper/LanguageHelper.php';
+            $this->registry->set('languageHelper', new LanguageHelper($this->registry));
+            $data['payment_spell_payment_pdp_btn_img'] = $this->languageHelper->get_button_image_url();
+            ]]></add>
+        </operation>
+    </file>
+    <file path="catalog/controller/checkout/cart.php">
+        <!-- <since i used a onepage checkout module, so the below route is set as onepage/checkout,
+        if you use default check out, you need to change it to checkout/checkout> -->
+        <operation>
+            <search position="after"><![CDATA[
+			$data['header'] = $this->load->controller('common/header');
+            ]]></search>
+            <add position="after" error="skip"><![CDATA[
+            $data['header'] = $this->load->controller('common/header');
+            $data['one_click_checkout'] = $this->url->link('extension/payment/spell_payment/oneClickProcess', '', true);
+            $data['payment_spell_payment_pdp'] = $this->config->get('payment_spell_payment_pdp');
+            require_once  realpath('') . '/catalog/controller/extension/payment/spell/helper/LanguageHelper.php';
+            $this->registry->set('languageHelper', new LanguageHelper($this->registry));
+            $data['payment_spell_payment_pdp_btn_img'] = $this->languageHelper->get_button_image_url();
+
+            ]]></add>
+        </operation>
+    </file>
+    <file path="catalog/view/theme/*/template/checkout/cart.twig">
+        <operation>
+            <search position="after" error="skip"> <![CDATA[ <a href="{{ checkout }}" class="btn btn-primary">{{ button_checkout }}</a> ]]>
+            </search>
+            <add position="after" error="skip">
+            <![CDATA[
+            {% if payment_spell_payment_pdp %}
+                <link rel="stylesheet" type="text/css" href="catalog/view/theme/default/stylesheet/spell.css" />
+                <div class="spell_cart_wrapper">
+                <a href="{{ one_click_checkout }}" class="cart_paynow btn btn-primary paynow_link">
+                    <img src="{{payment_spell_payment_pdp_btn_img}}">
+                </a></div>
+            {% endif %}
+            ]]>
+            </add>
+        </operation>
+    </file>
+    <file path="catalog/controller/checkout/checkout.php">
+        <!-- <since i used a onepage checkout module, so the below route is set as onepage/checkout,
+        if you use default check out, you need to change it to checkout/checkout> -->
+        <operation>
+            <search position="after"><![CDATA[
+			$data['header'] = $this->load->controller('common/header');
+            ]]></search>
+            <add position="after" error="skip"><![CDATA[
+            $data['header'] = $this->load->controller('common/header');
+            $data['one_click_checkout'] = $this->url->link('extension/payment/spell_payment/oneClickProcess', '', true);
+            $data['payment_spell_payment_pdp'] = $this->config->get('payment_spell_payment_pdp');
+            require_once  realpath('') . '/catalog/controller/extension/payment/spell/helper/LanguageHelper.php';
+            $this->registry->set('languageHelper', new LanguageHelper($this->registry));
+            $data['payment_spell_payment_pdp_btn_img'] = $this->languageHelper->get_button_image_url();
+
+            ]]></add>
+        </operation>
+    </file>
+    <file path="catalog/view/theme/*/template/checkout/checkout.twig">
+        <operation>
+            <search position="before" error="skip"> <![CDATA[ <div class="panel-group" id="accordion"> ]]>
+            </search>
+            <add position="before" error="skip">
+            <![CDATA[
+            {% if payment_spell_payment_pdp %}
+                <div style="justify-content: center;">
+                <link rel="stylesheet" type="text/css" href="catalog/view/theme/default/stylesheet/spell.css" />
+                <div class="checkout_pay_now_spell_wrapper spell_wrapper"><a href="{{ one_click_checkout }}" class="btn btn-primary paynow_link">
+                    <img src="{{payment_spell_payment_pdp_btn_img}}">
+                </a></div>
+                </div>
+            {% endif %}
+            ]]>
+            </add>
+        </operation>
+    </file>
+</modification>
