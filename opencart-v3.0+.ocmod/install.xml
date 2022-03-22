@@ -9,15 +9,20 @@
 		<operation>
 			<search position="after"><![CDATA[ <input type="hidden" name="product_id" value="{{ product_id }}" /> ]]></search>
 			<add position="after" error="skip"><![CDATA[
-            {% if payment_spell_payment_enabled %}
-                <klix-pay-later amount="{{ (price|replace({'€': ''}))*100 }}" brand_id="{{brand_id}}" language="{{language}}" theme="light" view="product" class="hydrated"></klix-pay-later>
-            {% endif %}
             {% if payment_spell_payment_pdp %}
-            <link rel="stylesheet" type="text/css" href="catalog/view/theme/default/stylesheet/spell.css" />
+            <!-- <link rel="stylesheet" type="text/css" href="catalog/view/theme/default/stylesheet/spell.css" />
             <br/>
             <a class="btn btn-primary btn-lg btn-block paynow_link" href="{{one_click_checkout}}&product_id={{product_id}}">
                 <img src="{{payment_spell_payment_pdp_btn_img}}">
-            </a>
+            </a> -->
+            {% endif %}
+            ]]></add>
+		</operation>
+        <operation>
+			<search position="after"><![CDATA[ <button type="button" id="button-cart" data-loading-text="{{ text_loading }}" class="btn btn-primary btn-lg btn-block">{{ button_cart }}</button> ]]></search>
+			<add position="after" error="skip"><![CDATA[
+            {% if payment_spell_payment_enabled %}
+                <klix-pay-later amount="{{ (price|replace({'€': ''}))*100 }}" brand_id="{{brand_id}}" language="{{language}}" theme="light" view="product" class="hydrated"></klix-pay-later>
             {% endif %}
             ]]></add>
 		</operation>
@@ -69,11 +74,11 @@
             <add position="after" error="skip">
             <![CDATA[
             {% if payment_spell_payment_pdp %}
-                <link rel="stylesheet" type="text/css" href="catalog/view/theme/default/stylesheet/spell.css" />
+                <!-- <link rel="stylesheet" type="text/css" href="catalog/view/theme/default/stylesheet/spell.css" />
                 <div class="spell_cart_wrapper">
                 <a href="{{ one_click_checkout }}" class="cart_paynow btn btn-primary paynow_link">
                     <img src="{{payment_spell_payment_pdp_btn_img}}">
-                </a></div>
+                </a></div> -->
             {% endif %}
             ]]>
             </add>
@@ -104,12 +109,12 @@
             <add position="before" error="skip">
             <![CDATA[
             {% if payment_spell_payment_pdp %}
-                <div style="justify-content: center;">
+                <!-- <div style="justify-content: center;">
                 <link rel="stylesheet" type="text/css" href="catalog/view/theme/default/stylesheet/spell.css" />
                 <div class="checkout_pay_now_spell_wrapper spell_wrapper"><a href="{{ one_click_checkout }}" class="btn btn-primary paynow_link">
                     <img src="{{payment_spell_payment_pdp_btn_img}}">
                 </a></div>
-                </div>
+                </div> -->
             {% endif %}
             ]]>
             </add>
