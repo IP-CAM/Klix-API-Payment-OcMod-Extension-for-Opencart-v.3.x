@@ -168,10 +168,11 @@ class Helpers
         $nameString = '';
         if (!empty($cart_products)) {
             foreach ($cart_products as $key => $cart_product) {
+                $name=$cart_product['name'].' x '.$cart_product['quantity'];
                 if ($key == 0) {
-                    $nameString = $cart_product['name'];
+                    $nameString = $name;
                 } else {
-                    $nameString = $nameString . ';' . $cart_product['name'];
+                    $nameString = $nameString . '; ' . $name;
                 }
             }
         }
