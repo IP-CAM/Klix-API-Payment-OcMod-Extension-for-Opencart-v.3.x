@@ -166,7 +166,7 @@ class ControllerExtensionPaymentSpellPayment extends Controller
         $urlParams = $this->collectUrlParams();
         $payment = $this->getSpellModel()->createPayment($urlParams);
         if (!isset($payment['checkout_url'])) {
-            $this->response->setOutput($this->language->get('error_ps_url_fail'));
+            $this->response->redirect($this->url->link('checkout/failure', '', true));
         } else {
             $this->session->data['spell_payment_id'] = $payment['id'];
             header("Location:" . $payment['checkout_url']);
@@ -180,12 +180,22 @@ class ControllerExtensionPaymentSpellPayment extends Controller
         $payment_id = $this->session->data['spell_payment_id'];
         $purchases = $this->getSpellModel()->getSpell()->purchases($payment_id);
         $status = !$purchases ? null : $purchases['status'];
+        $purchases_payment_method = $purchases['transaction_data']['payment_method'];
         $orderId = $purchases['reference'];
         $order = $this->getCheckoutOrder()->getOrder($orderId);
         $successStatusId = $this->config->get('payment_spell_payment_success_status_id');
         if ($status === 'paid') {
             if ($successStatusId !== $order['order_status_id']) {
-                $order_history_id = $this->getCheckoutOrder()->addOrderHistory($orderId, $successStatusId, $status);
+                $this->getCheckoutOrder()->addOrderHistory($orderId, $successStatusId, $status);
+                // payment_id into the db.
+                $payment_id = $this->session->data['spell_payment_id'];
+                if($purchases_payment_method === 'klix'){
+                    $sql = "UPDATE `".DB_PREFIX."order` SET `payment_code` = 'spell_payment_".$this->db->escape($payment_id)."' WHERE `oc_order`.`order_id` = ".$orderId;
+                    $this->db->query( $sql );
+                }else{
+                    $sql = "UPDATE `".DB_PREFIX."order` SET `payment_code` = 'spell_multilink_payment_".$this->db->escape($payment_id)."' WHERE `oc_order`.`order_id` = ".$orderId;
+                    $this->db->query( $sql );
+                }
             }
             $this->response->redirect($this->url->link('checkout/success', '', true));
         } else {
@@ -256,12 +266,14 @@ class ControllerExtensionPaymentSpellPayment extends Controller
      */
     public function oneClickProcess()
     {
-        $this->registry->set(
-            'PDPCheckoutController',
-            new PDPCheckoutController($this->registry)
-        );
-
-        $this->PDPCheckoutController->oneClickProcess();
+        $urlParams = $this->collectUrlParams();
+        $payment = $this->getSpellModel()->createPayment($urlParams, true);
+        if (!isset($payment['checkout_url'])) {
+            $this->response->redirect($this->url->link('checkout/failure', '', true));
+        } else {
+            $this->session->data['spell_payment_id'] = $payment['id'];
+            header("Location:" . $payment['checkout_url']);
+        }
     }
 
     /**
@@ -292,7 +304,6 @@ class ControllerExtensionPaymentSpellPayment extends Controller
             'OrderController',
             new OrderController($this->registry)
         );
-
         return $this->OrderController->createOrder($purchase);
     }
 
@@ -338,5 +349,35 @@ class ControllerExtensionPaymentSpellPayment extends Controller
     {
         $errorMsg = $this->language->get('error_gateway_fail');
         $this->showErrorPage($errorMsg);
+    }
+
+    /**
+     * Call back function for error
+     *
+     * @return void;
+     */
+    public function cancel()
+    {
+        $this->response->redirect($this->url->link('checkout/cart', '', true));
+    }
+
+    public function install()
+    {
+        $this->checkFieldInModel();
+    }
+
+    public function checkFieldInModel() {
+        $isModelField = FALSE;
+        $result = $this->db->query( "DESCRIBE `".DB_PREFIX."order`;" );
+        foreach ($result->rows as $row) {
+           if ($row['Field'] == 'payment_id') {
+              $isModelField = TRUE;
+              break;
+           }
+        }
+        if (!$isModelField) {
+           $sql = "ALTER TABLE `".DB_PREFIX."order` ADD `payment_id` int( 11 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT ''";
+           $this->db->query( $sql );
+        }
     }
 }

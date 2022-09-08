@@ -1,6 +1,6 @@
 <?php
 
-define('SPELL_MODULE_VERSION', 'v1.1.2');
+define('SPELL_MODULE_VERSION', 'v1.1.0');
 define("ROOT_URL", "https://portal.klix.app");
 
 class SpellAPI
@@ -106,6 +106,20 @@ class SpellAPI
             var_export($result, true)
         ));
         return $result && $result['status'] == 'paid';
+    }
+
+    public function refund_payment($payment_id, $params)
+    {
+        $this->log_info(sprintf("refunding payment: %s", $payment_id));
+
+        $result = $this->call('POST', "/purchases/{$payment_id}/refund/", $params);
+
+        $this->log_info(sprintf(
+            "payment refund result: %s",
+            var_export($result, true)
+        ));
+
+        return $result;
     }
 
     private function call($method, $route, $params = [])

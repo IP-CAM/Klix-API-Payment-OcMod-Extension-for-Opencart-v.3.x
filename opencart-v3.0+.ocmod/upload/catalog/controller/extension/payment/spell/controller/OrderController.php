@@ -4,6 +4,7 @@ class OrderController
 {
     private $load;
     private $tax;
+    private $db;
     private $cart;
     private $currency;
     private $registry;
@@ -19,6 +20,7 @@ class OrderController
     {
         $this->language = $registry->get('language');
         $this->load = $registry->get('load');
+        $this->db = $registry->get('db');
         $this->tax = $registry->get('tax');
         $this->cart = $registry->get('cart');
         $this->request = $registry->get('request');
@@ -70,6 +72,7 @@ class OrderController
             );
 
             $sort_order = array();
+            $results = array();
             $results = $this->model_setting_extension->getExtensions('total');
             $ext = [];
             foreach ($results as $key => $result) {
@@ -223,11 +226,17 @@ class OrderController
         $order_data['payment_country'] = $purchase['client']['shipping_country'];
         $order_data['payment_country_id'] = $this->config->get('config_country_id');
         $order_data['payment_address_format'] = "";
-        $order_data['payment_custom_field'] = (isset($this->session->data['payment_address']['custom_field']) ? $this->session->data['payment_address']['custom_field'] : array());
+        $order_data['payment_custom_field'] =
+            (isset($this->session->data['payment_address']['custom_field']) ? $this->session->data['payment_address']['custom_field'] : array());
         $order_data['payment_method'] = $this->config->get('payment_spell_payment_method_desc') ?: 'Klix E-commerce Gateway';;
-
-        $order_data['payment_code'] = $this->config->get('payment_spell_payment_brand_id');
-
+        $payment_id = $this->session->data['spell_payment_id'];
+        
+        $purchases_payment_method = $purchases['transaction_data']['payment_method'];
+        if($purchases_payment_method === 'klix'){
+            $order_data['payment_code'] = "spell_payment_".$payment_id;
+        }else{
+            $order_data['payment_code'] = "spell_multilink_payment_".$payment_id;
+        }
         return $order_data;
     }
 

@@ -2,7 +2,7 @@
 <modification>
     <code>Klix</code>
     <name>Klix</name>
-    <version>1.1.1e</version>
+    <version>1.1.2</version>
     <author>Klix</author>
     <link>https://portal.klix.app</link>
      <file path="catalog/view/theme/*/template/product/product.twig">
@@ -10,11 +10,11 @@
 			<search position="after"><![CDATA[ <input type="hidden" name="product_id" value="{{ product_id }}" /> ]]></search>
 			<add position="after" error="skip"><![CDATA[
             {% if payment_spell_payment_pdp %}
-            <!-- <link rel="stylesheet" type="text/css" href="catalog/view/theme/default/stylesheet/spell.css" />
+            <link rel="stylesheet" type="text/css" href="catalog/view/theme/default/stylesheet/spell.css" />
             <br/>
-            <a class="btn btn-primary btn-lg btn-block paynow_link" href="{{one_click_checkout}}&product_id={{product_id}}">
+            <a class="btn btn-primary btn-lg btn-block paynow_link" href="{{one_click_checkout}}&product_id={{product_id}}"> 
                 <img src="{{payment_spell_payment_pdp_btn_img}}">
-            </a> -->
+            </a>
             {% endif %}
             ]]></add>
 		</operation>
@@ -27,7 +27,7 @@
             ]]></add>
 		</operation>
 	</file>
-	<file path="catalog/controller/product/product.php">
+	<file path="catalog/controller/product/product.php">	  
         <!-- <since i used a onepage checkout module, so the below route is set as onepage/checkout,
         if you use default check out, you need to change it to checkout/checkout> -->
         <operation>
@@ -47,9 +47,9 @@
             $data['brand_id']=$this->config->get('payment_spell_payment_brand_id');
             $data['language']=$this->languageHelper->get_language();
             ]]></add>
-        </operation>
+        </operation>	
     </file>
-    <file path="catalog/controller/checkout/cart.php">
+    <file path="catalog/controller/checkout/cart.php">	  
         <!-- <since i used a onepage checkout module, so the below route is set as onepage/checkout,
         if you use default check out, you need to change it to checkout/checkout> -->
         <operation>
@@ -65,26 +65,26 @@
             $data['payment_spell_payment_pdp_btn_img'] = $this->languageHelper->get_button_image_url();
 
             ]]></add>
-        </operation>
+        </operation>	
     </file>
     <file path="catalog/view/theme/*/template/checkout/cart.twig">
         <operation>
             <search position="after" error="skip"> <![CDATA[ <a href="{{ checkout }}" class="btn btn-primary">{{ button_checkout }}</a> ]]>
             </search>
             <add position="after" error="skip">
-            <![CDATA[
+            <![CDATA[ 
             {% if payment_spell_payment_pdp %}
-                <!-- <link rel="stylesheet" type="text/css" href="catalog/view/theme/default/stylesheet/spell.css" />
+                <link rel="stylesheet" type="text/css" href="catalog/view/theme/default/stylesheet/spell.css" />
                 <div class="spell_cart_wrapper">
                 <a href="{{ one_click_checkout }}" class="cart_paynow btn btn-primary paynow_link">
                     <img src="{{payment_spell_payment_pdp_btn_img}}">
-                </a></div> -->
+                </a></div>
             {% endif %}
             ]]>
             </add>
         </operation>
     </file>
-    <file path="catalog/controller/checkout/checkout.php">
+    <file path="catalog/controller/checkout/checkout.php">	  
         <!-- <since i used a onepage checkout module, so the below route is set as onepage/checkout,
         if you use default check out, you need to change it to checkout/checkout> -->
         <operation>
@@ -100,23 +100,114 @@
             $data['payment_spell_payment_pdp_btn_img'] = $this->languageHelper->get_button_image_url();
 
             ]]></add>
-        </operation>
+        </operation>	
     </file>
     <file path="catalog/view/theme/*/template/checkout/checkout.twig">
         <operation>
             <search position="before" error="skip"> <![CDATA[ <div class="panel-group" id="accordion"> ]]>
             </search>
             <add position="before" error="skip">
-            <![CDATA[
+            <![CDATA[ 
             {% if payment_spell_payment_pdp %}
-                <!-- <div style="justify-content: center;">
+                <div style="justify-content: center;">
                 <link rel="stylesheet" type="text/css" href="catalog/view/theme/default/stylesheet/spell.css" />
                 <div class="checkout_pay_now_spell_wrapper spell_wrapper"><a href="{{ one_click_checkout }}" class="btn btn-primary paynow_link">
                     <img src="{{payment_spell_payment_pdp_btn_img}}">
                 </a></div>
-                </div> -->
+                </div>
             {% endif %}
             ]]>
+            </add>
+        </operation>
+    </file>
+    <file path="admin/model/sale/order.php">
+        <operation>
+            <search offset="70" index="0" error="skip"><![CDATA[
+				'reward'                  => $reward,
+            ]]></search>
+            <add position="after" error="skip"><![CDATA[
+            'payment_id'                => str_replace(["spell_payment","spell_payment_"],"", $order_query->row['payment_code']),
+            ]]></add>
+        </operation>
+    </file> 
+    <file path="admin/controller/sale/order.php">
+        <operation>
+            <search offset="739" index="0" error="skip">
+                <![CDATA[ $order_info = $this->model_sale_order->getOrder($order_id); ]]>
+            </search>
+            <add position="after" error="skip">
+            <![CDATA[ 
+                $data['spell_order_total'] = $order_info['total'];
+                 if(strpos($order_info['payment_code'],'spell_payment') !== false || strpos($order_info['payment_code'],'spell_payment_') !== false ){
+                    $payment_id = str_replace(["spell_payment","spell_payment_"],["",""], $order_info['payment_code']);
+                }else{
+                    $payment_id = '';
+                }
+                $data['payment_id'] = $payment_id;
+                $data['payment_code'] = $order_info['payment_code'];
+                $data['spell_refund_url'] = $this->url->link('extension/payment/spell_payment/refund', '', true);
+                $data['spell_payment_title'] = $this->config->get('payment_spell_payment_method_desc') ?: 'Klix E-commerce Gateway';
+            ]]>
+            </add>
+        </operation>
+    </file>
+    <file path="admin/view/template/sale/order_info.twig">
+        <operation>
+            <search offset="203" error="skip">
+                <![CDATA[ {% endif %} </div>]]>
+            </search>
+            <add position="after" error="skip">
+                <![CDATA[
+                {% if order_status != "Refunded" %}
+                    {% if  payment_id != "" %}
+                    {% if 'spell_payment' in payment_code %}
+                        {% if payment_method == spell_payment_title  %}
+                            <div style="justify-content: end;display: flex;">
+                                <form action="{{ spell_refund_url }}&user_token={{ user_token }}" method="post" id="form-refund">
+                                    <input type="hidden" name="spell_order_total" id="spell_order_total" value="{{ spell_order_total }}" />
+                                    <input type="hidden" name="order_id" id="order_id" value="{{ order_id }}" />
+                                    <div style="display: block; margin: 10px;">
+                                        <div style="margin: 10px;">
+                                            <input type="number" placeholder="Amount to refund" name="refund-amount" required="true" style="margin-right: 10px;" min="0.01" step="0.01" class="form-control" />
+                                        </div>
+                                        <div style="margin: 10px;">
+                                            <input type="radio" class="refund_type" id="full" name="refund_type" value="full" />
+                                            <label for="full">Full Refund</label><br>
+                                        </div>
+                                        <div style="margin: 10px;">
+                                            <input type="radio" class="refund_type" id="partial" name="refund_type" value="partial" />
+                                            <label for="partial">Partial Refund</label><br>
+                                        </div>
+                                        <div style="margin: 10px;">
+                                            <input type="submit" value="submit" class="btn btn-info" />
+                                            {# <button type="submit" class="btn btn-info">Refund</button> #}
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <script>
+                            const radios = document.querySelectorAll('input[name="refund_type"]');
+                                radios.forEach(radio => {
+                                    radio.addEventListener('click', function () {
+                                        let radioVal = radio.value;
+                                        if(radioVal === "full"){
+                                            let input = document.querySelector("input[name='refund-amount']");
+                                            let spell_order_total = document.querySelector("#spell_order_total");
+                                            input.setAttribute("readonly",true);
+                                            input.value = spell_order_total.value;
+                                        }else if(radioVal === "partial"){
+                                            let input = document.querySelector("input[name='refund-amount']");
+                                            input.removeAttribute('readonly');
+                                            input.value = 0;
+                                        }
+                                    });
+                                });
+                            </script>
+                        {% endif %}
+                    {% endif %}
+                    {% endif %}
+                {% endif %}
+                ]]>
             </add>
         </operation>
     </file>

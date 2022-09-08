@@ -7,7 +7,6 @@ $_['text_spell_payment'] = '';
 
 $_['error_permission'] = 'You do not have enough permission for this action';
 
-
 // View texts
 $_['text_module_config_title'] = 'Klix E-commerce Gateway Configuration';
 

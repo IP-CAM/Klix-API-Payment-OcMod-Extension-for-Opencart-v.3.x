@@ -6,6 +6,7 @@ class PDPCheckoutController
     private $load;
     private $language;
     private $session;
+    private $url;
     private $request;
     private $response;
     private $model_extension_payment_spell_payment;
@@ -16,46 +17,10 @@ class PDPCheckoutController
         $this->load = $registry->get('load');
         $this->session = $registry->get('session');
         $this->request = $registry->get('request');
+        $this->url = $registry->get('url');
         $this->response = $registry->get('response');
         $this->load->model('extension/payment/spell_payment');
         $this->model_extension_payment_spell_payment = $registry->get('model_extension_payment_spell_payment');
-    }
-
-    /**
-     * Callback functions
-     *
-     * @Route("/index.php?route=extension/payment/spell_payment/oneClickProcess")
-     *
-     * @return void;
-     */
-    public function oneClickProcess()
-    {
-        $payment = $this->getSpellModel()->createOneClickPayment($this->request);
-        if (!isset($payment['checkout_url'])) {
-            $this->response->setOutput($this->language->get('error_ps_url_fail'));
-        } else {
-            if ($this->session->data['spell_payment_id'] !=  $payment['id'] ) {
-                $this->session->data['spell_payment_id'] = $payment['id'];
-                header("Location:" . $payment['checkout_url']);
-            } else {
-                $this->response->setOutput($this->language->get('error_ps_url_fail'));
-            }
-        }
-    }
-
-    private function collectUrlParams()
-    {
-        $order_id = $this->session->data['order_id'];
-        $arr = array(
-            // 'country' => $this->request->post['country'],
-            'order_info' => $this->getCheckoutOrder()->getOrder($order_id),
-        );
-
-        if (array_key_exists('payment_method', $this->request->post)) {
-            $arr['payment_method'] = $this->request->post['payment_method'];
-        }
-
-        return $arr;
     }
 
     /** @return ModelCheckoutOrder */
