@@ -1,6 +1,6 @@
 <?php
 
-define('SPELL_MODULE_VERSION', 'v1.1.3');
+define('SPELL_MODULE_VERSION', 'v1.1.4');
 define("ROOT_URL", "https://portal.klix.app");
 
 class SpellAPI
@@ -64,31 +64,12 @@ class SpellAPI
         return $this->call('POST', '/purchases/', $params);
     }
 
-    /**
-     * @return array [
-     *     'available_payment_methods' => ['maestro','mastercard','sepa_credit_transfer_qr','visa'],
-     *     'by_country' => ['any' => ['card','sepa_credit_transfer_qr']],
-     *     'country_names' => ['any' => 'Other'],
-     *     'names' => [
-     *         'card' => 'Bank cards',
-     *         'sepa_credit_transfer_qr' => 'SEPA Credit Transfer (QR)',
-     *     ],
-     *     'logos' => [
-     *         'card' => [
-     *             '/static/images/icon-maestro.svg',
-     *             '/static/images/icon-mastercard.svg',
-     *             '/static/images/icon-visa.svg',
-     *         ],
-     *         'sepa_credit_transfer_qr' => '/static/images/icon-sepa_credit_transfer_qr.svg',
-     *     ],
-     * ]
-     */
-    public function payment_methods($currency, $language)
+    public function payment_methods($currency, $language,$amountInCents)
     {
         $this->log_info("fetching payment methods");
         return $this->call(
             'GET',
-            "/payment_methods/?brand_id={$this->brand_id}&currency={$currency}&language={$language}"
+            "/payment_methods/?brand_id={$this->brand_id}&currency={$currency}&language={$language}&amount={$amountInCents}"
         );
     }
 
