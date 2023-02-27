@@ -90,13 +90,13 @@ class ControllerExtensionPaymentSpellPayment extends Controller
         $spell = $this->getSpellModel()->getSpell();
         $language = $this->languageHelper->get_language();
 
-        $amountInCents=$this->cart->getTotal()*100;
+        // $amountInCents=$this->cart->getTotal()*100;
 
-        if(isset($this->session->data['shipping_method']['cost'])) {
-            $amountInCents+=$this->session->data['shipping_method']['cost']*100;
-        }
+        // if(isset($this->session->data['shipping_method']['cost'])) {
+        //     $amountInCents+=$this->session->data['shipping_method']['cost']*100;
+        // }
         
-        $payment_methods = $spell->payment_methods($currency, $language,$amountInCents);
+        $payment_methods = $spell->payment_methods($currency, $language);
         
 
         if (is_null($payment_methods)) {

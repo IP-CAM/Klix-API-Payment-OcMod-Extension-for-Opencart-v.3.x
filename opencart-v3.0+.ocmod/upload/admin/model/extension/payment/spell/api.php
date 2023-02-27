@@ -83,12 +83,12 @@ class SpellAPI
      *     ],
      * ]
      */
-    public function payment_methods($currency, $language,$amountInCents)
+    public function payment_methods($currency, $language)
     {
         $this->log_info("fetching payment methods");
         return $this->call(
             'GET',
-            "/payment_methods/?brand_id={$this->brand_id}&currency={$currency}&language={$language}&amount={$amountInCents}"
+            "/payment_methods/?brand_id={$this->brand_id}&currency={$currency}&language={$language}"
         );
     }
 
