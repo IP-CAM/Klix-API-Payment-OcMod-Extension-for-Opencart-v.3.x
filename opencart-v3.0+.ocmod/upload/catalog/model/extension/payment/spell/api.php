@@ -1,6 +1,6 @@
 <?php
 
-define('SPELL_MODULE_VERSION', 'v1.1.4');
+define('SPELL_MODULE_VERSION', 'v1.1.5');
 define("ROOT_URL", "https://portal.klix.app");
 
 class SpellAPI
@@ -177,6 +177,9 @@ class SpellAPI
 
     public function log_error($error_text, $error_data = null)
     {
+        if (!$this->debug) {
+            return;
+        }
         $error_text = "ERROR: " . $error_text . ";";
         if ($error_data) {
             $error_text .= " ERROR DATA: " . var_export($error_data, true) . ";";

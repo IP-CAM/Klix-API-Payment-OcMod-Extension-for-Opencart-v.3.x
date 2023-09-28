@@ -4,7 +4,7 @@ require_once __DIR__ . '/../../spell/helper/Helper.php';
 
 class CheckoutHelper
 {
-    const SPELL_MODULE_VERSION = 'v1.1.4';
+    const SPELL_MODULE_VERSION = 'v1.1.5';
 
     private $load;
     private $tax;
@@ -82,8 +82,9 @@ class CheckoutHelper
 
         $checkout_url = $payment['checkout_url'];
         $this->logger = new DefaultLogger($this->log);
-        $this->logger->log("INFO: " . print_r($paymentParams, true) . ";");
-        $this->logger->log("INFO: " . print_r($payment, true) . ";");
+        $spell->log_info("INFO: " . print_r($paymentParams, true) . ";");
+        $spell->log_info("INFO: " . print_r($payment, true) . ";");
+
         if (isset($urlParams['payment_method'])) {
             $checkout_url .= '?preferred=' . $urlParams['payment_method'];
         }

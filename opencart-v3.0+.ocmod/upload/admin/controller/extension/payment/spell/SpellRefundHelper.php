@@ -186,7 +186,10 @@ class SpellRefundHelper{
 
     private function log_order_info($msg, $o)
     {
-        $this->logger->log("order_info: ".$msg . ': ' . print_r($o));
+        $debug = $this->config->get('payment_spell_payment_debug') === 'on' ? true : false;
+        if($debug) {
+            $this->logger->log("order_info: ".$msg . ': ' . print_r($o));
+        }
     }
 
     private function getBrandId()
