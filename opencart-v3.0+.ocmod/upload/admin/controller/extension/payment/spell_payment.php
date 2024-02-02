@@ -18,6 +18,7 @@ class ControllerExtensionPaymentSpellPayment extends Controller
         "payment_spell_payment_pdp",
         "payment_spell_payment_method_desc",
         "payment_spell_payment_method_title",
+        "payment_spell_payment_confirm_button_title",
         "payment_spell_payment_success_status_id",
         "payment_spell_payment_error_status_id",
     );

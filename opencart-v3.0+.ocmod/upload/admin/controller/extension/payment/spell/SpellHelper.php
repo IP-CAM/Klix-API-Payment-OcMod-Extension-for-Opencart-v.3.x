@@ -50,6 +50,8 @@ class SpellHelper
         $lang['pm_description'] = $this->language->get('text_pm_description');
         $lang['pm_description_info'] = $this->language->get('text_pm_description_info');
         $lang['pm_title'] = $this->language->get('text_pm_title');
+        $lang['confirm_button_title']=$this->language->get('text_confirm_button_title');
+        $lang['confirm_button_title_info']=$this->language->get('text_confirm_button_title_info');
         $lang['enable_pdp'] = $this->language->get('text_enable_pdp');
         $lang['pm_title_info'] = $this->language->get('text_pm_title_info');
         $lang['enable_pdp_info'] = $this->language->get('text_enable_pdp_info');

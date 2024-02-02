@@ -15,6 +15,7 @@ $_['text_select_payment_method'] = 'Select payment method';
 
 $_['text_place_order'] = 'Place Order';
 
+
 // Error
 $_['error_ps_url_fail'] = 'Failed to generate payment system url';
 
