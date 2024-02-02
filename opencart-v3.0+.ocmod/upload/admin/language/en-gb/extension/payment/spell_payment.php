@@ -21,6 +21,8 @@ $_['text_pm_description_info'] = 'If not set, "Klix E-commerce Gateway" will be 
 
 $_['text_pm_title'] = 'Change payment method title';
 $_['text_pm_title_info'] = 'If not set, "Select payment method" will be used. Ignored if payment method selection is disabled';
+$_['text_confirm_button_title'] = 'Change confirm button title';
+$_['text_confirm_button_title_info'] = 'If not set, "Place order" will be used.';
 $_['text_enable_pdp_info'] = 'If not set, no payment button available on product page';
 $_['text_enable_pdp'] = 'Enable one click payment for product';
 $_['text_brand_id'] = 'Brand ID';

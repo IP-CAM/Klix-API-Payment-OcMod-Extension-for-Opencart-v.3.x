@@ -86,6 +86,7 @@ class ControllerExtensionPaymentSpellPayment extends Controller
     private function collectTplData()
     {
         $title = $this->config->get('payment_spell_payment_method_title');
+        $confirm_button=$this->config->get('payment_spell_payment_confirm_button_title');
         $currency = $this->getSessionData()['currency'];
         $spell = $this->getSpellModel()->getSpell();
         $language = $this->languageHelper->get_language();
@@ -130,7 +131,7 @@ class ControllerExtensionPaymentSpellPayment extends Controller
 
         return [
             'title' => $title ?: $this->language->get('text_select_payment_method'),
-            'place_order' => $this->language->get('text_place_order'),
+            'place_order' => $confirm_button ?:  $this->language->get('text_place_order'),
             'action' => $this->url->link('extension/payment/spell_payment/process', '', true),
             'payment_methods_api_data' => $payment_methods,
             'country_options' => $country_options,

@@ -4,7 +4,7 @@ require_once __DIR__ . '/../../spell/helper/Helper.php';
 
 class CheckoutHelper
 {
-    const SPELL_MODULE_VERSION = 'v1.1.5';
+    const SPELL_MODULE_VERSION = 'v1.1.6';
 
     private $load;
     private $tax;

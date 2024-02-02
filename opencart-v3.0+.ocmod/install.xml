@@ -2,7 +2,7 @@
 <modification>
     <code>Klix</code>
     <name>Klix</name>
-    <version>1.1.5</version>
+    <version>1.1.6</version>
     <author>Klix</author>
     <link>https://portal.klix.app</link>
      <file path="catalog/view/theme/*/template/product/product.twig">
