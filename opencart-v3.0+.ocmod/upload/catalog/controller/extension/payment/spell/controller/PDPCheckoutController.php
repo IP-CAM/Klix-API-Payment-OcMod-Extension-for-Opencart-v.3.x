@@ -53,7 +53,7 @@ class PDPCheckoutController
         $status = !$purchase ? null : $purchase['status'];
         $successStatusId = $this->config->get('payment_spell_payment_success_status_id');
         if ($spell->was_payment_successful($payment_id) && $status === 'paid') {
-            $order_history_id = $this->getCheckoutOrder()->addOrderHistory($orderId, $successStatusId, $status);
+            $order_history_id = $this->getCheckoutOrder()->addOrderHistory($orderId, $successStatusId, $status,true);
         } else {
             $errorStatusId = $this->config->get('payment_spell_payment_error_status_id');
             $this->getCheckoutOrder()->addOrderHistory($orderId, $errorStatusId, $status);

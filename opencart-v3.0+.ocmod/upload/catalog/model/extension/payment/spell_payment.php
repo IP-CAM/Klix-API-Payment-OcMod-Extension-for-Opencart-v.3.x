@@ -15,7 +15,7 @@ require_once __DIR__ . '/../../../controller/extension/payment/spell/helper/Chec
 class ModelExtensionPaymentSpellPayment extends Model
 {
 
-    const SPELL_MODULE_VERSION = 'v1.1.6';
+    const SPELL_MODULE_VERSION = 'v1.1.7';
 
 
     public function getSpell()
