@@ -194,7 +194,7 @@ class ControllerExtensionPaymentSpellPayment extends Controller
         $successStatusId = $this->config->get('payment_spell_payment_success_status_id');
         if ($status === 'paid') {
             if ($successStatusId !== $order['order_status_id']) {
-                $this->getCheckoutOrder()->addOrderHistory($orderId, $successStatusId, $status);
+                $this->getCheckoutOrder()->addOrderHistory($orderId, $successStatusId, $status,true);
                 // payment_id into the db.
                 $payment_id = $this->session->data['spell_payment_id'];
                 if($purchases_payment_method === 'klix'){
@@ -252,7 +252,7 @@ class ControllerExtensionPaymentSpellPayment extends Controller
         $status = !$purchase ? null : $purchase['status'];
         $successStatusId = $this->config->get('payment_spell_payment_success_status_id');
         if ($spell->was_payment_successful($payment_id) && $status === 'paid') {
-            $order_history_id = $this->getCheckoutOrder()->addOrderHistory($orderId, $successStatusId, $status);
+            $order_history_id = $this->getCheckoutOrder()->addOrderHistory($orderId, $successStatusId, $status,true);
         } else {
             if ($successStatusId === $order['order_status_id']) {
                 $this->response->redirect($this->url->link('checkout/success', '', true));
@@ -332,7 +332,7 @@ class ControllerExtensionPaymentSpellPayment extends Controller
 
         if ($status === 'paid') {
             if ($successStatusId !== $order['order_status_id']) {
-                $order_history_id = $this->getCheckoutOrder()->addOrderHistory($orderId, $successStatusId, $status);
+                $order_history_id = $this->getCheckoutOrder()->addOrderHistory($orderId, $successStatusId, $status,true);
             }
             $this->response->redirect($this->url->link('checkout/success', '', true));
         } else {
